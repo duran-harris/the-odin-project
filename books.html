@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta name="color-scheme" content = "light"/>
+</head>
+<body>
+<style>
+	.books {
+		border: 1px solid black;
+	}
+	.books td, th{
+		border: 1px solid black;
+	}
+</style>
+<script type="text/javascript">
+
+	let myLibrary = [];
+
+	function Book(author, title, read) {
+	    this.id     =  crypto.randomUUID();
+		this.author =  author;
+		this.title  =  title;
+		this.read = read;
+		this.toggleRead = () => {
+			this.read = !read;
+		};
+		this.remove = () => {
+			let	newLibrary = myLibrary.filter(book => book.id != this.id);
+			myLibrary = newLibrary;
+			displayBooks();
+		};
+	}
+
+	function addBookToLibrary() {
+		let author = document.getElementsByName('author')[0].value;
+		let title = document.getElementsByName('title')[0].value;
+		let read = document.getElementsByName('read')[0].checked;
+		
+		let book = new Book(author, title, read);
+		myLibrary.push(book);
+	}
+	
+	
+	
+	function displayBooks() {
+	
+	let booksTableBody = document.querySelector('.books > tbody');
+	booksTableBody.innerHTML = '';
+	
+		for(const book of myLibrary) {
+			
+			let tr = document.createElement("tr");
+			let authorCell = document.createElement("td");
+			let titleCell = document.createElement("td");
+			let readCell = document.createElement("td");
+			let removeCell = document.createElement("td");
+			
+			let readCheckbox = document.createElement("input")
+			readCheckbox.type = 'checkbox';
+			readCheckbox.onclick = book.toggleRead;
+			readCheckbox.checked = book.read;
+			readCheckbox.value = book.read;
+			
+			let removeButton =  document.createElement("input");
+			removeButton.type = "button";
+			removeButton.value = "Remove";
+			removeButton.onclick = book.remove;
+			removeCell.appendChild(removeButton);
+			
+			authorCell.innerText = `${book.author}`;
+			titleCell.innerText = `${book.title}`;
+			readCell.appendChild(readCheckbox);
+			
+			tr.appendChild(authorCell);
+			tr.appendChild(titleCell);
+			tr.appendChild(readCell);
+			tr.appendChild(removeCell);
+			
+			booksTableBody.appendChild(tr)
+		}
+	}
+</script>
+
+<form name="books-form">
+	<input name="author" type="text" value="" />
+	<input name="title" type="text" value="" />
+	<input name="read" type="checkbox" value="false" />
+
+	<table class="books">
+		<thead>
+			<tr>
+				<th>Author</th>
+				<th>Title</th>
+				<th>Read</th>
+				<th>Remove</th>
+			</tr>
+		</thead>
+		<tbody >
+			
+		</tbody>
+	</table> 
+	<input type="submit" value="Add" onclick="event.preventDefault();addBookToLibrary();displayBooks();" />
+</form>
+</body>
+</html>
