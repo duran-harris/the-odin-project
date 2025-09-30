@@ -1,174 +1,168 @@
 <html>
 
 <head>
-	<title>Tic Tac Toe</title>
-<style>
- #gameBoard {
-	display: grid;   
-        height: 100%;
-        width: 100%; 
-	grid-template-rows: 1fr 1fr 1fr;
-	grid-template-columns: 1fr 1fr 1fr;
-	     
- }
+  <title>Tic Tac Toe</title>
+  <style>
+      #gameBoard {
+          display: grid;
+          height: 100%;
+          width: 100%;
+          grid-template-rows: 1fr 1fr 1fr;
+          grid-template-columns: 1fr 1fr 1fr;
 
-.gameTile {
-   z-index: 2;
-   height: 3fr;
-   width: 3fr;
-   border : 1px solid black;
-}
-</style>
+      }
+
+      .gameTile {
+          z-index: 2;
+          height: 3fr;
+          width: 3fr;
+          border: 1px solid black;
+      }
+
+      .scoreBoard {
+
+      }
+  </style>
 
 </head>
 
 <body>
 
-<div id="header">
-</div>
+<section id="scoreBoard">
+  <div class="player-score"></div>
+  <div class="player-name"></div>
+</section>
 
 <div id="gameBoard">
-<div class="gameTile" data-index="0">&nbsp;</div>
-<div class="gameTile" data-index="1">&nbsp;</div>
-<div class="gameTile" data-index="2">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
 
-<div class="gameTile" data-index="3">&nbsp;</div>
-<div class="gameTile" data-index="4">&nbsp;</div>
-<div class="gameTile" data-index="5">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
 
-<div class="gameTile" data-index="6">&nbsp;</div>
-<div class="gameTile" data-index="7">&nbsp;</div>
-<div class="gameTile" data-index="8">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
+  <div class="gameTile">&nbsp;</div>
 
 </div>
 
 <script type="text/javascript">
 
 
-function createGameBoard() {  
- const gameBoardTiles = [];
-  for(i=0; i <9; i++) {
-	gameBoardTiles[i] = createTile(i, null);    
-  }
+    function createGameBoard() {
+        const gameBoardTiles = [];
+        for (let i = 0; i < 9; i++) {
+            gameBoardTiles[i] = createTile(i, null);
+        }
 
-  const getGameBoardTiles = () => gameBoardTiles;
-  const storeMove = (tileIndex, pPlayer) => gameBoardTiles[tileIndex].storeMove(pPlayer);
-  const isVacantTile = (tileIndex) => gameBoardTiles[tileIndex] == null;
-  const render = () => gameBoardTiles.forEach( (elem, index) => elem.render());
-  const renderTile = (index) => gameBoardTiles[index].render();
-  return {storeMove , isVacantTile, getGameBoardTiles, render, renderTile }; 
-}
+        const getGameBoardTiles = () => gameBoardTiles;
+        const storeMove = (tileIndex, pPlayer) => gameBoardTiles[tileIndex].storeMove(pPlayer);
+        const isVacantTile = (tileIndex) => gameBoardTiles[tileIndex] == null;
+        const render = () => gameBoardTiles.forEach((elem, index) => elem.render());
+        const renderTile = (index) => gameBoardTiles[index].render();
+        return {storeMove, isVacantTile, getGameBoardTiles, render, renderTile};
+    }
 
-function createTile(index, player) {
-   
-  const render = () => {
+    function createTile(index, player) {
 
-   if(this.player != null && index != null) {
-          document.querySelector(`.gameTile:nth-child(${index+1})`).innerHTML = this.player.icon;     
-   }
-  };
-  const storeMove = (pPlayer) => {
-    this.player = pPlayer;
-  };
+        const render = () => {
 
-  return {index, player, render, storeMove};
-}
+            if (this.player != null && index != null) {
+                document.querySelector(`.gameTile:nth-child(${index + 1})`).innerHTML = this.player.icon;
+            }
+        };
+        const storeMove = (pPlayer) => {
+            this.player = pPlayer;
+        };
 
-
-
-const gameController = (function () {
-
- const playerOne = createPlayer('Player 1', 'X');
- const playerTwo = createPlayer('Player 2', 'O');
- const gameBoard = createGameBoard();
- let activePlayer = playerOne;
-
-  const getGameBoard = () => gameBoard ;
-
-  const checkWinConditionsMet = () => {
-      return false;
-  };
-  
-  const checkIfStalemate = () => {
-      return false;
-  };
-
-  const checkIfDraw = () => {
-     return false;
-  };
-
-  const renderGameBoard= () => {
-        gameBoard.render();
-  };
-
-  const renderTile= (index) => {
-        gameBoard.renderTile(index);
-  };
-
-  const endPlayerTurn = () => {
-					//alert(`Before ending player turn: ${activePlayer .name} ${activePlayer.icon}`);					
-					activePlayer  === playerOne ?activePlayer  = playerTwo: activePlayer  = playerOne;
-					//alert(`After ending player turn: ${activePlayer.name} ${activePlayer.icon}`);
-				  					    
-				}
-  const getActivePlayer = () => activePlayer ;
-  const setActivePlayer = (player) => activePlayer = player;
-  const storeMove = (index, player) => {
-						//alert(`Storing move: ${index}`);
-						getGameBoard().storeMove(index, player);
-					};
- 
- 
- return {playerOne , playerTwo , getGameBoard , checkWinConditionsMet, checkIfStalemate, checkIfDraw, renderGameBoard , renderTile, endPlayerTurn , getActivePlayer , setActivePlayer, storeMove };
-
-})();
+        return {index, player, render, storeMove};
+    }
 
 
-  
-  gameController.renderGameBoard();
+    const gameController = (function () {
+
+        const playerOne = createPlayer('Player 1', 'X');
+        const playerTwo = createPlayer('Player 2', 'O');
+        const gameBoard = createGameBoard();
+
+        let activePlayer = playerOne;
+
+        const getGameBoard = () => gameBoard;
+        const getGameStates = () => Object.freeze({
+            NOT_STARTED: "NOT_STARTED",
+            IN_PROGRESS: "IN_PROGRESS",
+            FINISHED: "FINISHED",
+            PLAYER_ONE_WINS: "PLAYER_ONE_WINS",
+            PLAYER_TWO_WINS: "PLAYER_TWO_WINS",
+            STALEMATE: "STALEMATE"
+        })
+
+        let gameState = getGameStates().NOT_STARTED
+
+        const setGameState = (state) => gameState = state;
+
+        const renderGameBoard = () => {
+            gameBoard.render();
+        };
+
+        const renderTile = (index) => {
+            gameBoard.renderTile(index);
+        };
+
+        const endPlayerTurn = () => {
+            activePlayer === playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
+        };
+
+        const updateScore = () => {
+            activePlayer === playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
+        };
+
+        const getActivePlayer = () => activePlayer;
+        const setActivePlayer = (player) => activePlayer = player;
+        const storeMove = (index, player) => {
+            //alert(`Storing move: ${index}`);
+            getGameBoard().storeMove(index, player);
+        };
+
+        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, getcheckWinConditionsMet, checkIfStalemate, checkIfDraw, renderGameBoard, renderTile, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove};
+
+    })();
 
 
-function createStreak(streakStart, streakMiddle, streakEnd) {
- return {streakStart, streakMiddle, streakEnd};
-}
+    gameController.renderGameBoard();
+
+    function createStreak(streakStart, streakMiddle, streakEnd) {
+        return {streakStart, streakMiddle, streakEnd};
+    }
+
+    function createPlayer(name, icon) {
+        const playerMovements = [];
+        const playerStreaks = [];
+        return {name, icon, playerMovements, playerStreaks};
+    }
 
 
-function createPlayer(name, icon) { 
-  const playerMovements = [];
-  const playerStreaks = [];
-  return {name, icon, playerMovements, playerStreaks};
-}
-  
+    let tileNodeList = document.querySelectorAll('div.gameTile');
+
+    for (let i = 0; i < tileNodeList.length; i++) {
+
+        let element = tileNodeList[i];
+        element.addEventListener('click', function () {
+
+            gameController.storeMove(i, gameController.getActivePlayer());
+            gameController.renderTile(i);
+            gameController.updateScore();
+            //If game not won yet end the current player's turn
+            gameController.endPlayerTurn(gameController.getActivePlayer());
 
 
+        });
 
-
-let tileNodeList = document.querySelectorAll('div.gameTile');
-
-for(let i=0; i < tileNodeList.length; i++) {
-  
-  let element = tileNodeList[i];
-  element.addEventListener('click', function() {
-	
-        gameController.storeMove(i, gameController.getActivePlayer());
-	gameController.renderTile(i);
-        //If game not won yet end the current player's turn
-        gameController.endPlayerTurn(gameController.getActivePlayer()) ;
-
-	
-       
-  });
-
-}
-   
-
-
+    }
 
 
 </script>
-
-
-
 </body>
-
 </html>
