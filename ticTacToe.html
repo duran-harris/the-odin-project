@@ -6,6 +6,7 @@
       :root {
           --player-one-color: red;
           --player-two-color: blue;
+          --score-board-height: 3rem;
       }
 
 
@@ -29,6 +30,7 @@
           display: flex;
           border: 1px solid black;
           justify-content: space-between;
+          margin-bottom: 1.5rem;
       }
   </style>
 
@@ -214,15 +216,21 @@
 
         const isStreak = (tileArray) => {
             let players = tileArray.map(tile => tile.player);
-            return players[0] === players[1] && players[1] === players[2];
+            return players[0] !=null && players[0] === players[1] && players[1] === players[2];
         }
 
         const processVerticalStreaks = () => {
 
+            console.log(`isVerticalStreak[column0]=${isStreak(getTilesInColumn(0))}`);
+            console.log(`isVerticalStreak[column1]=${isStreak(getTilesInColumn(1))}`);
+            console.log(`isVerticalStreak[column2]=${isStreak(getTilesInColumn(2))}`);
+
         }
 
         const processHorizontalStreaks = () => {
-
+            console.log(`isHorizontalStreak[row0]=${isStreak(getTilesInRow(0))}`);
+            console.log(`isHorizontalStreak[row1]=${isStreak(getTilesInRow(1))}`);
+            console.log(`isHorizontalStreak[row2]=${isStreak(getTilesInRow(2))}`);
         }
 
         const processDiagonalStreaks = () => {
@@ -236,7 +244,7 @@
             getGameBoard().storeMove(x, y, player);
         };
 
-        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, renderGameBoard, renderTile, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow};
+        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, renderGameBoard, renderTile, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks};
 
     })();
 
@@ -270,6 +278,7 @@
                 if (tile.player == null) {
                     gameController.storeMove(tile.x, tile.y, gameController.getActivePlayer());
                     gameController.renderTile(tile.x, tile.y);
+                    gameController.processStreaks();
                     //gameController.updateScore();
                     //If game not won yet end the current player's turn
                     gameController.endPlayerTurn();
