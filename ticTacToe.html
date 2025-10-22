@@ -147,7 +147,7 @@
         const render = () => {
 
             if (this.player != null && x != null && y != null) {
-                document.querySelector(`.gameTile:nth-child(${index + 1})`).innerHTML = this.player.icon;
+                document.querySelector(`.gameTile:nth-child(${index + 1})`).innerHTML = `<div class="gameTile-icon">${this.player.icon}</div>`;
             }
         };
         const storeMove = (pPlayer) => {
