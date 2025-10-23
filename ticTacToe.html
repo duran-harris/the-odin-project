@@ -1,8 +1,12 @@
 <html>
-
 <head>
   <title>Tic Tac Toe</title>
   <style>
+      :root {
+          --player-one-color: red;
+          --player-two-color: gray;
+      }
+
       #gameBoard {
           display: grid;
           height: 600px;
@@ -26,6 +30,14 @@
           clip-path: circle(50% at 50% 50%);
       }
 
+      .player-one-icon-color {
+          color: var(--player-one-color);
+      }
+
+      .player-two-icon-color {
+          color: var(--player-two-color);
+      }
+
       #scoreBoard {
           display: flex;
           border: 1px solid black;
@@ -35,7 +47,6 @@
   </style>
 </head>
 <body>
-
 <section id="scoreBoard">
   <div class="player-one">
     <div>
@@ -48,7 +59,7 @@
       Score: <span id="player-one-score">0</span>
     </div>
     <div>
-      Symbol : <span id="player-one-icon">x</span>
+      Symbol : <span id="player-one-icon" class="player-one-icon-color">x</span>
     </div>
   </div>
 
@@ -63,7 +74,7 @@
       Score: <span id="player-two-score">0</span>
     </div>
     <div>
-      Symbol : <span id="player-two-icon">o</span>
+      Symbol : <span id="player-two-icon" class="player-two-icon-color">o</span>
     </div>
   </div>
 </section>
@@ -102,10 +113,8 @@
                 index++;
             }
         }
-
         const getGameBoardTiles = () => gameBoardTiles;
         const storeMove = (x, y, pPlayer) => {
-            console.log(`gameBoard.storeMove x=${x}, y=${y}, player=${pPlayer}`);
             gameBoardTiles[x][y].storeMove(pPlayer);
         };
         const isVacantTile = (x, y) => gameBoardTiles[x][y] == null;
@@ -151,9 +160,7 @@
         let gameState = getGameStates().NOT_STARTED
         const setGameState = (state) => gameState = state;
         const endPlayerTurn = () => {
-            console.log(`beginning endPlayerTurn: activePlayer = ${activePlayer.name}`);
             activePlayer === playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
-            console.log(`end endPlayerTurn: activePlayer = ${activePlayer.name}`);
         };
 
         const getStreaksForPlayer = (player) => {
@@ -161,7 +168,6 @@
         }
 
         const updateScore = () => {
-
             playerOne.score = getStreaksForPlayer(playerOne).length;
             playerTwo.score = getStreaksForPlayer(playerTwo).length;
             document.getElementById("player-one-score").innerText = playerOne.score;
@@ -169,7 +175,6 @@
         };
 
         const getTilesInColumn = (columnIndex) => {
-            console.log(`getTilesInColumn: ${columnIndex}`);
             let tiles = [];
             for (let x = 0; x < 3; x++) {
                 for (let y = 0; y < 3; y++) {
@@ -179,8 +184,6 @@
                     }
                 }
             }
-            console.log(`#getTilesInColumn(columnIndex):${columnIndex}`);
-            console.log({tiles});
             return tiles;
         };
 
@@ -194,14 +197,16 @@
                     }
                 }
             }
-
-            console.log(`#getTilesInRow(rowIndex):${rowIndex}`);
-            console.log(tiles);
             return tiles;
         }
 
-        const getTilesInDiagonal = (x, y, diagonalDirection) => {
-
+        const getTilesInDiagonal = (x1, y1, x2, y2, x3, y3) => {
+            let tiles = [];
+            let tileOne = gameController.getGameBoard().getGameBoardTiles()[x1][y1];
+            let tileTwo = gameController.getGameBoard().getGameBoardTiles()[x2][y2];
+            let tileThree = gameController.getGameBoard().getGameBoardTiles()[x3][y3];
+            tiles = tiles.concat(tileOne, tileTwo, tileThree);
+            return tiles;
         }
 
         const processStreaks = () => {
@@ -212,31 +217,22 @@
         }
 
         const isStreak = (tileArray) => {
-
-            console.log(`beginning isStreak: tileArray =`);
-            console.log({tileArray});
             let players = tileArray.map(tile => tile.player);
-            console.log(`isStreak players=`);
-            console.log(players);
             return players[0] != null && players[0] === players[1] && players[1] === players[2];
         }
 
         const processVerticalStreaks = () => {
-
             let tilesInColumnOne = getTilesInColumn(0);
             let tilesInColumnTwo = getTilesInColumn(1);
             let tilesInColumnThree = getTilesInColumn(2);
 
             if (isStreak(tilesInColumnOne)) {
-                console.log(`isVerticalStreak[column0]=true`);
                 streaks.push(createStreak(tilesInColumnOne, tilesInColumnOne[0].player));
             }
             if (isStreak(tilesInColumnTwo)) {
-                console.log(`isVerticalStreak[column1]=true`);
                 streaks.push(createStreak(tilesInColumnTwo, tilesInColumnTwo[0].player));
             }
             if (isStreak(tilesInColumnThree)) {
-                console.log(`isVerticalStreak[column2]=true`);
                 streaks.push(createStreak(tilesInColumnThree, tilesInColumnThree[0].player));
             }
         }
@@ -247,21 +243,26 @@
             let tilesInRowThree = getTilesInRow(2);
 
             if (isStreak(tilesInRowOne)) {
-                console.log(`isHorizontalStreak[row0]=true`);
                 streaks.push(createStreak(tilesInRowOne, tilesInRowOne[0].player));
             }
             if (isStreak(tilesInRowTwo)) {
-                console.log(`isHorizontalStreak[row1]=true`);
                 streaks.push(createStreak(tilesInRowTwo, tilesInRowTwo[0].player));
             }
             if (isStreak(tilesInRowThree)) {
-                console.log(`isHorizontalStreak[row2]=true`);
                 streaks.push(createStreak(tilesInRowThree, tilesInRowThree[0].player));
             }
         }
 
         const processDiagonalStreaks = () => {
+            let tilesInLeftToRightDiagonal = getTilesInDiagonal(0, 2, 1, 1, 2, 0)
+            let tilesInRightToLeftDiagonal = getTilesInDiagonal(0, 0, 1, 1, 2, 2);
 
+            if (isStreak(tilesInLeftToRightDiagonal)) {
+                streaks.push(createStreak(tilesInLeftToRightDiagonal, tilesInLeftToRightDiagonal[0].player));
+            }
+            if (isStreak(tilesInRightToLeftDiagonal)) {
+                streaks.push(createStreak(tilesInRightToLeftDiagonal, tilesInRightToLeftDiagonal[0].player));
+            }
         }
 
         const createStreak = (tileArray, player) => {
