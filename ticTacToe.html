@@ -3,34 +3,27 @@
 <head>
   <title>Tic Tac Toe</title>
   <style>
-      :root {
-          --player-one-color: red;
-          --player-two-color: blue;
-          --score-board-height: 3rem;
-      }
-
-
       #gameBoard {
           display: grid;
-          height: 100%;
-          width: 100%;
-          grid-template-rows: 0.8fr 0.8fr 0.8fr;
-          grid-template-columns: 0.8fr 0.8fr 0.8fr;
-          margin: 0.3fr;
+          height: 600px;
+          width: 600px;
+          grid-template-rows: 200px 200px 200px;
+          grid-template-columns: 200px 200px 200px;
+          margin: auto;
+          opacity: 0.2;
       }
 
       .gameTile {
-          z-index: 2;
-          border: 2px solid black;
+          border: 1px solid black;
           background-color: lightskyblue;
-          opacity: 0.2;
-          position: relative;
       }
 
-      .gameTile-icon {
-          position: absolute !important;
-          left: 50%;
-          top: 50% !important;
+      .x {
+          clip-path: polygon(0px 0px, 100px 100px, 200px 0px, 200px 200px, 100px 100px, 0px 200px)
+      }
+
+      .o {
+          clip-path: circle(50% at 50% 50%);
       }
 
       #scoreBoard {
@@ -40,9 +33,7 @@
           margin-bottom: 1.5rem;
       }
   </style>
-
 </head>
-
 <body>
 
 <section id="scoreBoard">
@@ -57,7 +48,7 @@
       Score: <span id="player-one-score">0</span>
     </div>
     <div>
-      Symbol : <span id="player-one-icon">X</span>
+      Symbol : <span id="player-one-icon">x</span>
     </div>
   </div>
 
@@ -72,47 +63,35 @@
       Score: <span id="player-two-score">0</span>
     </div>
     <div>
-      Symbol : <span id="player-two-icon">O</span>
+      Symbol : <span id="player-two-icon">o</span>
     </div>
   </div>
 </section>
 
 <div id="gameBoard">
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
 
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
 
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
   <div class="gameTile">
-    <div class="gameTile-icon"></div>
   </div>
-
 </div>
 
 <script type="text/javascript">
-
-
     function createGameBoard() {
         let gameBoardTiles = [];
         let index = 0;
@@ -126,37 +105,24 @@
 
         const getGameBoardTiles = () => gameBoardTiles;
         const storeMove = (x, y, pPlayer) => {
-            console.log(`gameBoard.storeMove x=${x}, y=${y}`);
+            console.log(`gameBoard.storeMove x=${x}, y=${y}, player=${pPlayer}`);
             gameBoardTiles[x][y].storeMove(pPlayer);
         };
-
         const isVacantTile = (x, y) => gameBoardTiles[x][y] == null;
-        const render = () => {
-            for (let x = 0; x < 3; x++) {
-                for (let y = 0; y < 3; y++) {
-                    gameBoardTiles[x][y].render();
-                }
-            }
-        }
-        const renderTile = (x, y) => gameBoardTiles[x][y].render();
-        return {storeMove, isVacantTile, getGameBoardTiles, render, renderTile};
+        return {storeMove, isVacantTile, getGameBoardTiles};
     }
 
     function createTile(x, y, index, player) {
-
-        const render = () => {
-
-            if (this.player != null && x != null && y != null) {
-                document.querySelector(`.gameTile:nth-child(${index + 1})`).innerHTML = `<div class="gameTile-icon">${this.player.icon}</div>`;
+        const storeMove = (player) => {
+            let element = document.querySelector(`.gameTile:nth-child(${index + 1})`);
+            if (player != null) {
+                element.classList.remove('o', 'x');
+                element.classList.toggle(player.icon)
+                gameController.getGameBoard().getGameBoardTiles()[x][y].player = player;
             }
         };
-        const storeMove = (pPlayer) => {
-            this.player = pPlayer;
-        };
-
-        return {x, y, index, player, render, storeMove};
+        return {x, y, index, player, storeMove};
     }
-
 
     const gameController = (function () {
 
@@ -168,8 +134,8 @@
 
         const playerOne = createPlayer(playerOneName, playerOneIcon);
         const playerTwo = createPlayer(playerTwoName, playerTwoIcon);
-        const gameBoard = createGameBoard();
-
+        let gameBoard = createGameBoard();
+        let streaks = [];
         let activePlayer = playerOne;
 
         const getGameBoard = () => gameBoard;
@@ -183,26 +149,27 @@
         })
 
         let gameState = getGameStates().NOT_STARTED
-
         const setGameState = (state) => gameState = state;
-
-        const renderGameBoard = () => {
-            gameBoard.render();
-        };
-
-        const renderTile = (x, y) => {
-            gameBoard.renderTile(x, y);
-        };
-
         const endPlayerTurn = () => {
+            console.log(`beginning endPlayerTurn: activePlayer = ${activePlayer.name}`);
             activePlayer === playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
+            console.log(`end endPlayerTurn: activePlayer = ${activePlayer.name}`);
         };
+
+        const getStreaksForPlayer = (player) => {
+            return streaks.filter(streak => streak.player === player);
+        }
 
         const updateScore = () => {
 
+            playerOne.score = getStreaksForPlayer(playerOne).length;
+            playerTwo.score = getStreaksForPlayer(playerTwo).length;
+            document.getElementById("player-one-score").innerText = playerOne.score;
+            document.getElementById("player-two-score").innerText = playerTwo.score;
         };
 
         const getTilesInColumn = (columnIndex) => {
+            console.log(`getTilesInColumn: ${columnIndex}`);
             let tiles = [];
             for (let x = 0; x < 3; x++) {
                 for (let y = 0; y < 3; y++) {
@@ -212,11 +179,12 @@
                     }
                 }
             }
+            console.log(`#getTilesInColumn(columnIndex):${columnIndex}`);
+            console.log({tiles});
             return tiles;
         };
 
         const getTilesInRow = (rowIndex) => {
-
             let tiles = [];
             for (let x = 0; x < 3; x++) {
                 for (let y = 0; y < 3; y++) {
@@ -226,6 +194,9 @@
                     }
                 }
             }
+
+            console.log(`#getTilesInRow(rowIndex):${rowIndex}`);
+            console.log(tiles);
             return tiles;
         }
 
@@ -234,86 +205,101 @@
         }
 
         const processStreaks = () => {
+            streaks = [];
             processVerticalStreaks();
             processHorizontalStreaks();
             processDiagonalStreaks();
         }
 
         const isStreak = (tileArray) => {
+
+            console.log(`beginning isStreak: tileArray =`);
+            console.log({tileArray});
             let players = tileArray.map(tile => tile.player);
+            console.log(`isStreak players=`);
+            console.log(players);
             return players[0] != null && players[0] === players[1] && players[1] === players[2];
         }
 
         const processVerticalStreaks = () => {
 
-            console.log(`isVerticalStreak[column0]=${isStreak(getTilesInColumn(0))}`);
-            console.log(`isVerticalStreak[column1]=${isStreak(getTilesInColumn(1))}`);
-            console.log(`isVerticalStreak[column2]=${isStreak(getTilesInColumn(2))}`);
+            let tilesInColumnOne = getTilesInColumn(0);
+            let tilesInColumnTwo = getTilesInColumn(1);
+            let tilesInColumnThree = getTilesInColumn(2);
 
+            if (isStreak(tilesInColumnOne)) {
+                console.log(`isVerticalStreak[column0]=true`);
+                streaks.push(createStreak(tilesInColumnOne, tilesInColumnOne[0].player));
+            }
+            if (isStreak(tilesInColumnTwo)) {
+                console.log(`isVerticalStreak[column1]=true`);
+                streaks.push(createStreak(tilesInColumnTwo, tilesInColumnTwo[0].player));
+            }
+            if (isStreak(tilesInColumnThree)) {
+                console.log(`isVerticalStreak[column2]=true`);
+                streaks.push(createStreak(tilesInColumnThree, tilesInColumnThree[0].player));
+            }
         }
 
         const processHorizontalStreaks = () => {
-            console.log(`isHorizontalStreak[row0]=${isStreak(getTilesInRow(0))}`);
-            console.log(`isHorizontalStreak[row1]=${isStreak(getTilesInRow(1))}`);
-            console.log(`isHorizontalStreak[row2]=${isStreak(getTilesInRow(2))}`);
+            let tilesInRowOne = getTilesInRow(0);
+            let tilesInRowTwo = getTilesInRow(1);
+            let tilesInRowThree = getTilesInRow(2);
+
+            if (isStreak(tilesInRowOne)) {
+                console.log(`isHorizontalStreak[row0]=true`);
+                streaks.push(createStreak(tilesInRowOne, tilesInRowOne[0].player));
+            }
+            if (isStreak(tilesInRowTwo)) {
+                console.log(`isHorizontalStreak[row1]=true`);
+                streaks.push(createStreak(tilesInRowTwo, tilesInRowTwo[0].player));
+            }
+            if (isStreak(tilesInRowThree)) {
+                console.log(`isHorizontalStreak[row2]=true`);
+                streaks.push(createStreak(tilesInRowThree, tilesInRowThree[0].player));
+            }
         }
 
         const processDiagonalStreaks = () => {
 
         }
 
+        const createStreak = (tileArray, player) => {
+            return {tileArray, player};
+        }
+
         const getActivePlayer = () => activePlayer;
         const setActivePlayer = (player) => activePlayer = player;
         const storeMove = (x, y, player) => {
-            console.log(`Storing move: x= ${x}, y = ${y}`);
+            console.log(`Storing move: x= ${x}, y = ${y}, player= ${player}`);
             getGameBoard().storeMove(x, y, player);
         };
-
-        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, renderGameBoard, renderTile, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks};
-
+        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks};
     })();
 
-
-    gameController.renderGameBoard();
-
-    function createStreak(streakStart, streakMiddle, streakEnd) {
-        return {streakStart, streakMiddle, streakEnd};
-    }
-
     function createPlayer(name, icon) {
-        const playerMovements = [];
-        const playerStreaks = [];
-        return {name, icon, playerMovements, playerStreaks};
+        return {name, icon};
     }
-
 
     let tileNodeList = document.querySelectorAll('div.gameTile');
 
     for (let x = 1; x < 4; x++) {
-
         for (let y = 1; y < 4; y++) {
-
             let tile = gameController.getGameBoard().getGameBoardTiles()[x - 1][y - 1];
             console.log(`addEventListener on tile: index = ${tile.index + 1} tile.x=${tile.x}, tile.y=${tile.y} ,x=${x} , y=${y}  `);
             let element = tileNodeList[tile.index];
+
             element.addEventListener('click', function () {
-
                 console.log(`onclick fired: tile.x =${tile.x}, tile.y=${tile.y}`);
-
-                if (tile.player == null) {
-                    gameController.storeMove(tile.x, tile.y, gameController.getActivePlayer());
-                    gameController.renderTile(tile.x, tile.y);
-                    gameController.processStreaks();
-                    //gameController.updateScore();
-                    //If game not won yet end the current player's turn
-                    gameController.endPlayerTurn();
-                }
-
+                console.log(`onclick gameController.getActivePlayer() = ${gameController.getActivePlayer()}`);
+                gameController.storeMove(tile.x, tile.y, gameController.getActivePlayer());
+                gameController.processStreaks();
+                gameController.updateScore();
+                //If game not won yet end the current player's turn
+                gameController.endPlayerTurn();
             });
         }
     }
-
-
 </script>
 </body>
 </html>
