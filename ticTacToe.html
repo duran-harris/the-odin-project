@@ -85,7 +85,6 @@
   </div>
 </section>
 
-
 <div id="gameBoard">
   <div class="gameTile">
   </div>
@@ -278,7 +277,6 @@
         const getActivePlayer = () => activePlayer;
         const setActivePlayer = (player) => activePlayer = player;
         const storeMove = (x, y, player) => {
-            console.log(`Storing move: x= ${x}, y = ${y}, player= ${player}`);
             getGameBoard().storeMove(x, y, player);
         };
         return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks};
@@ -293,16 +291,11 @@
     for (let x = 1; x < 4; x++) {
         for (let y = 1; y < 4; y++) {
             let tile = gameController.getGameBoard().getGameBoardTiles()[x - 1][y - 1];
-            console.log(`addEventListener on tile: index = ${tile.index + 1} tile.x=${tile.x}, tile.y=${tile.y} ,x=${x} , y=${y}  `);
             let element = tileNodeList[tile.index];
-
             element.addEventListener('click', function () {
-                console.log(`onclick fired: tile.x =${tile.x}, tile.y=${tile.y}`);
-                console.log(`onclick gameController.getActivePlayer() = ${gameController.getActivePlayer()}`);
                 gameController.storeMove(tile.x, tile.y, gameController.getActivePlayer());
                 gameController.processStreaks();
                 gameController.updateScore();
-                //If game not won yet end the current player's turn
                 gameController.endPlayerTurn();
             });
         }
