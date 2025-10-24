@@ -4,7 +4,7 @@
   <style>
       :root {
           --player-one-color: red;
-          --player-two-color: gray;
+          --player-two-color: black;
       }
 
       #gameBoard {
@@ -14,7 +14,7 @@
           grid-template-rows: 200px 200px 200px;
           grid-template-columns: 200px 200px 200px;
           margin: auto;
-          opacity: 0.2;
+          opacity: 0.5;
       }
 
       .gameTile {
@@ -23,11 +23,17 @@
       }
 
       .x {
-          clip-path: polygon(0px 0px, 100px 100px, 200px 0px, 200px 200px, 100px 100px, 0px 200px)
+          fill: var(--player-one-color);
+          opacity: 0.7;
+          stroke: white;
+          stroke-width: 1px;
       }
 
       .o {
-          clip-path: circle(50% at 50% 50%);
+          fill: var(--player-two-color);
+          opacity: 0.7;
+          stroke: white;
+          stroke-width: 1px;
       }
 
       .player-one-icon-color {
@@ -79,6 +85,7 @@
   </div>
 </section>
 
+
 <div id="gameBoard">
   <div class="gameTile">
   </div>
@@ -125,8 +132,7 @@
         const storeMove = (player) => {
             let element = document.querySelector(`.gameTile:nth-child(${index + 1})`);
             if (player != null) {
-                element.classList.remove('o', 'x');
-                element.classList.toggle(player.icon)
+                element.innerHTML = player.icon;
                 gameController.getGameBoard().getGameBoardTiles()[x][y].player = player;
             }
         };
@@ -138,8 +144,8 @@
         let playerOneName = document.getElementById("player-one-name").value
         let playerTwoName = document.getElementById("player-two-name").value
 
-        let playerOneIcon = document.getElementById("player-one-icon").innerText
-        let playerTwoIcon = document.getElementById("player-two-icon").innerText
+        let playerOneIcon = `<svg class="x-svg" width="200" height="200"><path d="M 0 0 L 100 100 L 200 0 L 200 200 L 100 100 L 0 200" class="x"/></svg>`;
+        let playerTwoIcon = `<svg class="circle-svg" width="200" height="200"><circle cx="100" cy="100" r="100" class="o"/></svg>`;
 
         const playerOne = createPlayer(playerOneName, playerOneIcon);
         const playerTwo = createPlayer(playerTwoName, playerTwoIcon);
