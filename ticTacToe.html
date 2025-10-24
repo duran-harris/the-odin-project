@@ -5,7 +5,7 @@
       :root {
           --player-one-color: red;
           --player-two-color: black;
-            font-family: monospace;
+          font-family: monospace;
       }
 
       #gameBoard {
@@ -50,6 +50,8 @@
           border: 1px solid black;
           justify-content: space-between;
           margin-bottom: 1.5rem;
+          border-radius: 6px;
+          padding: 10px;
       }
   </style>
 </head>
@@ -69,7 +71,12 @@
       Symbol : <span id="player-one-icon" class="player-one-icon-color">x</span>
     </div>
   </div>
-
+  <div>
+    <button id="start-game-btn" onclick="gameController.startGame();">Start Game!</button>
+  </div>
+  <div>
+    <button id="reset-game-btn" onclick="window.location.reload();" style="visibility:hidden">Reset</button>
+  </div>
   <div class="player-two">
     <div>
       <label for="player-two-name">
@@ -139,7 +146,7 @@
         return {x, y, index, player, storeMove};
     }
 
-    const gameController = (function () {
+    let gameController = (function () {
 
         let playerOneName = document.getElementById("player-one-name").value
         let playerTwoName = document.getElementById("player-two-name").value
@@ -280,7 +287,20 @@
         const storeMove = (x, y, player) => {
             getGameBoard().storeMove(x, y, player);
         };
-        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks};
+        const startGame = () => {
+            setGameState(getGameStates().IN_PROGRESS);
+            document.getElementById('start-game-btn').style.visibility = 'hidden';
+            document.getElementById('reset-game-btn').style.visibility = 'visible';
+        };
+        const reset = () => {
+            setGameState(getGameStates().IN_PROGRESS);
+            streaks = [];
+            activePlayer = playerOne;
+            tiles = [];
+            document.getElementById('start-game-btn').style.visibility = 'hidden';
+            document.getElementById('reset-game-btn').style.visibility = 'visible';
+        }
+        return {playerOne, playerTwo, getGameBoard, getGameStates, setGameState, endPlayerTurn, getActivePlayer, setActivePlayer, storeMove, updateScore, getTilesInColumn, getTilesInRow, processStreaks, startGame};
     })();
 
     function createPlayer(name, icon) {
