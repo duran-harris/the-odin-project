@@ -223,10 +223,10 @@
                     if (tile.streakOwner != null) {
                         let tileElement = tile.retrieveCorrespondingElement();
 
-                        if(tile.player === playerOne) {
-                            tileElement.classList.toggle(`streak-x`);
-                        } else if (tile.player === playerTwo) {
-                            tileElement.classList.toggle(`streak-o`);
+                        if(tile.streakOwner === playerOne) {
+                            tileElement.className = `gameTile streak-x`;
+                        } else if (tile.streakOwner === playerTwo) {
+                            tileElement.className = `gameTile streak-o`;
                         }
 
                         console.log({tileElement});
@@ -328,7 +328,6 @@
         const createStreak = (tileArray, player) => {
             for (tile of tileArray) {
                 tile.streakOwner = player;
-                tile.retrieve
                 console.log(`Adding streakOwner to tile for player ${player.name} at tile[x,y] ${tile.x},${tile.y}`);
             }
             return {tileArray, player};
