@@ -220,14 +220,23 @@
             document.getElementById("player-one-score").innerText = playerOne.score;
             document.getElementById("player-two-score").innerText = playerTwo.score;
 
+            for (let x = 0; x < 3; x++) {
+                for (let y = 0; y < 3; y++) {
+                    let tile = gameController.getGameBoard().getGameBoardTiles()[x][y];
+                    let tileElement = tile.retrieveCorrespondingElement();
+                    tileElement.className = 'gameTile';
+                }
+
+            }
+
             for (streak of allStreaks) {
                 for (tile of streak.tileArray) {
+                    let tileElement = tile.retrieveCorrespondingElement();
                     if (tile.streakOwner != null) {
-                        let tileElement = tile.retrieveCorrespondingElement();
                         if (tile.streakOwner === playerOne) {
-                            tileElement.className = `gameTile streak-x`;
+                            tileElement.classList.toggle(`streak-x`);
                         } else if (tile.streakOwner === playerTwo) {
-                            tileElement.className = `gameTile streak-o`;
+                            tileElement.classList.toggle(`streak-o`);
                         }
                         console.log({tileElement});
                     }
