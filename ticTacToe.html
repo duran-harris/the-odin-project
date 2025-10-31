@@ -4,7 +4,9 @@
   <style>
       :root {
           --player-one-color: red;
+          --player-one-streak-color: pink;
           --player-two-color: midnightblue;
+          --player-two-streak-color: lightskyblue;
           font-family: monospace;
       }
 
@@ -64,6 +66,15 @@
       .player-two-icon-color {
           color: var(--player-two-color);
       }
+
+      .gameTile.streak-x {
+          background-color: var(--player-one-streak-color);
+      }
+
+      .gameTile.streak-o {
+          background-color: var(--player-two-streak-color);
+      }
+
   </style>
 </head>
 <body>
@@ -134,7 +145,7 @@
         for (let x = 0; x < 3; x++) {
             gameBoardTiles[x] = new Array(3);
             for (let y = 0; y < 3; y++) {
-                gameBoardTiles[x][y] = createTile(x, y, index, null);
+                gameBoardTiles[x][y] = createTile(x, y, index, null, null);
                 index++;
             }
         }
@@ -146,7 +157,7 @@
         return {storeMove, isVacantTile, getGameBoardTiles};
     }
 
-    function createTile(x, y, index, player) {
+    function createTile(x, y, index, player, streakOwner) {
         const storeMove = (player) => {
             let element = document.querySelector(`.gameTile:nth-child(${index + 1})`);
             if (player != null) {
@@ -154,7 +165,12 @@
                 gameController.getGameBoard().getGameBoardTiles()[x][y].player = player;
             }
         };
-        return {x, y, index, player, storeMove};
+        const retrieveCorrespondingElement = () => {
+            let element = document.querySelector(`.gameTile:nth-child(${index + 1})`);
+            console.log('retrieveCorrespondingElement', {element});
+            return element;
+        };
+        return {x, y, index, player, streakOwner, storeMove, retrieveCorrespondingElement};
     }
 
     let gameController = (function () {
@@ -191,10 +207,32 @@
         }
 
         const updateScore = () => {
-            playerOne.score = getStreaksForPlayer(playerOne).length;
-            playerTwo.score = getStreaksForPlayer(playerTwo).length;
+
+            let playerOneStreaks = getStreaksForPlayer(playerOne);
+            let playerTwoStreaks = getStreaksForPlayer(playerTwo);
+            let allStreaks = [...playerOneStreaks, ...playerTwoStreaks];
+
+            playerOne.score = playerOneStreaks.length;
+            playerTwo.score = playerTwoStreaks.length;
+
             document.getElementById("player-one-score").innerText = playerOne.score;
             document.getElementById("player-two-score").innerText = playerTwo.score;
+
+            for (streak of allStreaks) {
+                for (tile of streak.tileArray) {
+                    if (tile.streakOwner != null) {
+                        let tileElement = tile.retrieveCorrespondingElement();
+
+                        if(tile.player === playerOne) {
+                            tileElement.classList.toggle(`streak-x`);
+                        } else if (tile.player === playerTwo) {
+                            tileElement.classList.toggle(`streak-o`);
+                        }
+
+                        console.log({tileElement});
+                    }
+                }
+            }
         };
 
         const getTilesInColumn = (columnIndex) => {
@@ -288,6 +326,11 @@
             }
         }
         const createStreak = (tileArray, player) => {
+            for (tile of tileArray) {
+                tile.streakOwner = player;
+                tile.retrieve
+                console.log(`Adding streakOwner to tile for player ${player.name} at tile[x,y] ${tile.x},${tile.y}`);
+            }
             return {tileArray, player};
         }
         const getActivePlayer = () => activePlayer;
