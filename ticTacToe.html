@@ -232,14 +232,16 @@
             for (streak of allStreaks) {
                 for (tile of streak.tileArray) {
                     let tileElement = tile.retrieveCorrespondingElement();
-                    if (tile.streakOwner != null) {
-                        if (tile.streakOwner === playerOne) {
+                    if (tile.streakOwner === playerOne) {
+                        if (!tileElement.classList.contains('streak-x')) {
                             tileElement.classList.toggle(`streak-x`);
-                        } else if (tile.streakOwner === playerTwo) {
+                        }
+                    } else if (tile.streakOwner === playerTwo) {
+                        if (!tileElement.classList.contains('streak-o')) {
                             tileElement.classList.toggle(`streak-o`);
                         }
-                        console.log({tileElement});
                     }
+                    console.log({tileElement});
                 }
             }
         };
