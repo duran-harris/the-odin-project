@@ -222,13 +222,11 @@
                 for (tile of streak.tileArray) {
                     if (tile.streakOwner != null) {
                         let tileElement = tile.retrieveCorrespondingElement();
-
-                        if(tile.streakOwner === playerOne) {
+                        if (tile.streakOwner === playerOne) {
                             tileElement.className = `gameTile streak-x`;
                         } else if (tile.streakOwner === playerTwo) {
                             tileElement.className = `gameTile streak-o`;
                         }
-
                         console.log({tileElement});
                     }
                 }
