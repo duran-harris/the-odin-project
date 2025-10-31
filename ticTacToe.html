@@ -8,6 +8,15 @@
           font-family: monospace;
       }
 
+      #scoreBoard {
+          display: flex;
+          border: 1px solid black;
+          justify-content: space-between;
+          margin-bottom: 1.5rem;
+          border-radius: 6px;
+          padding: 10px;
+      }
+
       #gameBoard {
           display: grid;
           height: 600px;
@@ -47,8 +56,6 @@
 
       .o {
           fill: var(--player-two-color);
-          stroke: white;
-          stroke-width: 1px;
       }
 
       .player-one-icon-color {
@@ -59,14 +66,7 @@
           color: var(--player-two-color);
       }
 
-      #scoreBoard {
-          display: flex;
-          border: 1px solid black;
-          justify-content: space-between;
-          margin-bottom: 1.5rem;
-          border-radius: 6px;
-          padding: 10px;
-      }
+
   </style>
 </head>
 <body>
@@ -129,14 +129,6 @@
   <div class="gameTile">
   </div>
 </div>
-
-<svg id="squircleClip">
-  <div class="squircle-element">
-    sfgsdfgsdfgsdfgsdfafsdfffffffdasddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-    <br/><br/>
-  </div>
-</svg>
-
 
 <script type="text/javascript">
     function createGameBoard() {
