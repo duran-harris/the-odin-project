@@ -30,6 +30,16 @@
           box-decoration-break: clone;
       }
 
+      .gameTile:nth-child(odd) {
+          background-color: yellow;
+          transform: rotate(-185deg);
+      }
+
+      .gameTile:nth-child(even) {
+          background-color: green;
+          transform: rotate(92deg);
+      }
+
       .x {
           fill: var(--player-one-color);
           opacity: 0.7;
