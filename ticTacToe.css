@@ -1,0 +1,78 @@
+:root {
+    --player-one-color: red;
+    --player-one-streak-color: pink;
+    --player-two-color: black;
+    --player-two-streak-color: lightskyblue;
+    font-family: monospace;
+}
+
+#scoreBoard {
+    display: flex;
+    border: 1px solid black;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+#gameBoard {
+    display: grid;
+    height: 600px;
+    width: 600px;
+    grid-gap: 1.1rem;
+    grid-template-rows: 200px 200px 200px;
+    grid-template-columns: 200px 200px 200px;
+    margin: auto;
+}
+
+.gameTile {
+    width: 200px;
+    height: 200px;
+    background-color: lightskyblue;
+    border: 1rem solid blue;
+    corner-shape: squircle bevel;
+    border-radius: 50% / 1.1rem 0.5rem 0.9rem 0.7rem;
+    /* Prevents background-break when wrapping */
+    box-decoration-break: clone;
+}
+
+.gameTile:hover {
+    border: 5px dashed midnightblue;
+}
+
+.gameTile:nth-child(odd) {
+    background-color: yellow;
+    transform: rotate(-185deg);
+}
+
+.gameTile:nth-child(even) {
+    background-color: green;
+    transform: rotate(92deg);
+}
+
+.x {
+    fill: var(--player-one-color);
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+
+.o {
+    fill: var(--player-two-color);
+    stroke-width: 3px;
+    stroke: white;
+}
+
+.player-one-icon-color {
+    color: var(--player-one-color);
+}
+
+.player-two-icon-color {
+    color: var(--player-two-color);
+}
+
+.gameTile.streak-x {
+    background-color: var(--player-one-streak-color);
+}
+
+.gameTile.streak-o {
+    background-color: var(--player-two-streak-color);
+}
